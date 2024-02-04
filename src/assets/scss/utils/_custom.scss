@@ -1,0 +1,12 @@
+label.has-required::before {
+    content: "*";
+    color: red;
+}
+
+.img-store {
+    height: 80px;
+}
+
+.swal2-container {
+    z-index: 9999
+}
