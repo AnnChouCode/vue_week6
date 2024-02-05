@@ -51,10 +51,7 @@ export default {
         })
     },
     logout () {
-      const date = new Date()
-      date.setTime(date.getTime() - 1000)
-      document.cookie = 'user=; expires=date.toGMTString();'
-
+      document.cookie = 'user=;expires=;'
       this.$router.push('/home')
     }
   },
