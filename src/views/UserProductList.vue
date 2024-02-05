@@ -1,7 +1,9 @@
 <template>
     <div class="container">
         <h2 class="py-5 h2 text-center">看產品</h2>
-
+        <!-- 分類篩選 -->
+        <filterCategory @get-Product-List="getProductList"></filterCategory>
+        <!-- 產品列表 -->
         <table class="table align-middle">
           <thead>
             <tr>
@@ -41,30 +43,16 @@
             </tr>
           </tbody>
         </table>
-
-        <nav aria-label="Page navigation" class="d-flex justify-content-end">
-        <ul class="pagination">
-        <li class="page-item" :class="{'disabled': !pagination.has_pre}">
-            <a class="page-link" href="#" aria-label="Previous">
-            <span aria-hidden="true">&laquo;</span>
-            </a>
-        </li>
-        <li class="page-item" v-for="page in pagination.total_pages" :key="page" :class="{'active': page === pagination.current_page}">
-            <a href="#" class="page-link" @click.prevent="getProductList(page)">{{ page }}</a>
-        </li>
-        <li class="page-item" :class="{'disabled': !pagination.has_next}">
-            <a class="page-link" href="#" aria-label="Next" @click.prevent="getProductList(pagination.current_page+1)">
-            <span aria-hidden="true">&raquo;</span>
-            </a>
-        </li>
-        </ul>
-    </nav>
+        <!-- 頁碼 -->
+        <paginationComponent :pagination="pagination" @get-Product-List="getProductList"></paginationComponent>
     </div>
 </template>
 
 <script>
 import cartStore from '@/stores/cartStore.js'
 import { mapActions } from 'pinia'
+import paginationComponent from '@/components/paginationComponent.vue'
+import filterCategory from '@/components/filterCategory.vue'
 
 const { VITE_API, VITE_PATH } = import.meta.env
 
@@ -109,6 +97,10 @@ export default {
   },
   mounted () {
     this.getProductList()
+  },
+  components: {
+    paginationComponent,
+    filterCategory
   }
 }
 </script>
