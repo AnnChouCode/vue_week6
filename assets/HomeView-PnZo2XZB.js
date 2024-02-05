@@ -1,1 +1,0 @@
-import{_ as e,o,c,a as t}from"./index-HLVo9Gad.js";const s={},n={class:"container py-5"},_=t("h1",null,"Hello! Welcome to Shopping Time.",-1),a=[_];function r(i,l){return o(),c("div",n,a)}const m=e(s,[["render",r]]);export{m as default};
