@@ -9,13 +9,12 @@
 </template>
 
 <script>
-const { VITE_API, VITE_PATH } = import.meta.env
+import allProductStore from '@/stores/allProductStore.js'
+import { mapActions, mapState } from 'pinia'
 
 export default {
   data () {
     return {
-      // 產品分類列表
-      categoryList: [],
       // 當前產品分類
       currentCategory: ''
     }
@@ -26,26 +25,8 @@ export default {
     }
   },
   methods: {
-    // 取得產品分類列表
-    getCategoryList () {
-      const url = `${VITE_API}/api/${VITE_PATH}/products/all`
-
-      this.axios.get(url)
-        .then(res => {
-          const products = res.data.products
-          const categoryList = new Set(products.map(item => item.category))
-          this.categoryList = [...categoryList]
-        })
-        .catch(err => this.$swal.fire(
-          {
-            icon: 'error',
-            text: err.response.data.message
-          }
-        ))
-    }
+    ...mapActions(allProductStore, ['getAllProducts'])
   },
-  mounted () {
-    this.getCategoryList()
-  }
+  computed: { ...mapState(allProductStore, ['allProducts', 'categoryList']) }
 }
 </script>
