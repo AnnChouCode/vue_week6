@@ -25,6 +25,8 @@ import { localize, setLocale } from '@vee-validate/i18n'
 // 引入 VeeValidate 的繁體中文語系檔
 import zhTW from '@vee-validate/i18n/dist/locale/zh_TW.json'
 
+// 引入 bootstrap
+import 'bootstrap'
 import 'bootstrap-icons/font/bootstrap-icons.css'
 
 import App from './App.vue'
