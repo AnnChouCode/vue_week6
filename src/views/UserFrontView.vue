@@ -1,7 +1,7 @@
 <template>
     <nav class="navbar navbar-expand-lg  navbar-dark bg-dark">
     <div class="container-fluid">
-      <a href="/home">
+      <a href="#/home">
         <h1 class="mb-0 me-5 fs-4 text-white">Shopping Time</h1>
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -33,12 +33,18 @@
 
 <script>
 import toastComponent from '@/components/toastComponent.vue'
+import allProductStore from '@/stores/allProductStore.js'
+import { mapActions } from 'pinia'
 
 export default {
   data () {
     return {
       isLoggedin: 'false'
     }
+  },
+  methods: {
+    // 取得所有產品資料，生成產品與分類資料
+    ...mapActions(allProductStore, ['getAllProducts'])
   },
   mounted () {
     // 取得 cookie
@@ -51,6 +57,9 @@ export default {
     if (!token) {
       this.isLoggedin = !this.isLoggedin
     }
+
+    // 取得所有產品資料
+    this.getAllProducts()
   },
   components: {
     toastComponent
