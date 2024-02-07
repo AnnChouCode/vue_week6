@@ -19,8 +19,6 @@
     :navigation="true"
     :modules="modules"
     class="mySwiper"
-    @swiperprogress="onProgress"
-    @swiperslidechange="onSlideChange"
     >
       <SwiperSlide v-for="(item, idx) in adCurrentCategory" :key="idx">
       <router-link :to="`/productinfo/${item.id}`">
@@ -34,7 +32,6 @@
 
 <script>
 // import Swiper js
-import { register } from 'swiper/element/bundle'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import { Autoplay, Pagination, Navigation } from 'swiper/modules'
 
@@ -43,16 +40,13 @@ import 'swiper/css'
 import 'swiper/css/pagination'
 import 'swiper/css/navigation'
 
-// import store
-import allProductStore from '@/stores/allProductStore.js'
-import { mapActions, mapState } from 'pinia'
-
-register()
+const { VITE_API, VITE_PATH } = import.meta.env
 
 export default {
   props: ['adCategoryTitle'],
   data () {
     return {
+      allProducts: [],
       adTitle: {
         sweet: '猜你喜歡吃甜甜',
         taste: '邀請你來嚐口感',
@@ -68,29 +62,6 @@ export default {
     }
   },
   methods: {
-    // 獲取所有產品
-    ...mapActions(allProductStore, ['getAllProducts']),
-
-    // 設定
-    setup () {
-      const spaceBetween = 10 // 不知道為什麼要加這個，不加或填 10 以外的數字會壞掉
-      const onProgress = (e) => {
-        const [swiper, progress] = e.detail
-        console.log('onProgress swiper', swiper)
-        console.log('onProgress progress', progress)
-      }
-
-      const onSlideChange = (e) => {
-        console.log('onSlideChange')
-      }
-
-      return {
-        spaceBetween,
-        onProgress,
-        onSlideChange
-      }
-    },
-
     // 取得產品分類列表
     getAdCategory () {
       const allData = this.allProducts
@@ -103,17 +74,34 @@ export default {
           }
         })
       })
+    },
+
+    // 獲取所有產品
+    getAllProducts () {
+      const url = `${VITE_API}/api/${VITE_PATH}/products/all`
+
+      this.axios.get(url)
+        .then(res => {
+          this.allProducts = res.data.products
+          this.getAdCategory()
+        })
+        .catch(err => {
+          this.$swal.fire(
+            {
+              icon: 'error',
+              text: err.response.data.message
+            }
+          )
+        })
     }
   },
   mounted () {
-    this.setup()
-    this.getAdCategory()
+    this.getAllProducts()
   },
   components: {
     Swiper,
     SwiperSlide
-  },
-  computed: { ...mapState(allProductStore, ['allProducts']) }
+  }
 }
 </script>
 
