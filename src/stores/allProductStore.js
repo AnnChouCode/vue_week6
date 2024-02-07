@@ -18,7 +18,6 @@ export default defineStore('allProductsStore', {
 
       axios.get(url)
         .then(res => {
-          // 提示訊息
           this.allProducts = res.data.products
           this.getCategoryList()
         })
