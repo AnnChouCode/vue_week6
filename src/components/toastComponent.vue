@@ -1,9 +1,13 @@
 <template>
     <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
-      <div ref="toast" id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-        <div class="toast-body d-flex align-items-center">
-            <i class="bi bi-info-circle me-2 text-success"></i>
-            <p class="mb-0">購物車已更新</p>
+      <div class="toast show mb-1" role="alert" aria-live="assertive" aria-atomic="true" v-for="(item, idx) in toastMsgList" :key="idx">
+        <div class="toast-body d-flex align-items-center justify-content-between">
+            <div class="d-flex">
+              <i class="bi me-2 text-success" :class="item.icon"></i>
+               <p class="mb-0">{{item.msg}}</p>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"
+          @click="clearToast(idx)"></button>
         </div>
       </div>
     </div>
@@ -11,25 +15,46 @@
 
 <script>
 import cartStore from '@/stores/cartStore.js'
-import { Toast } from 'bootstrap'
 import { mapState } from 'pinia'
 
 export default {
   data () {
     return {
-      toastList: null
+      toastList: null,
+      toastMsgList: [],
+      toastInnerMsg: {
+        addToCart: {
+          icon: 'bi-cart-plus',
+          msg: '已加入購物車'
+        },
+        updateCart: {
+          icon: 'bi-info-circle',
+          msg: '購物車已更新'
+        },
+        deleteCartItem: {
+          icon: 'bi-cart-dash',
+          msg: '商品已刪除'
+        }
+      }
     }
   },
-  mounted () {
-    const toastElList = this.$refs.toast
-    this.toastList = new Toast(toastElList, { delay: 1000 })
-  },
   computed: {
-    ...mapState(cartStore, ['showToast'])
+    ...mapState(cartStore, ['doAction', 'toastState'])
   },
   watch: {
-    showToast () {
-      this.toastList.show()
+    toastState () {
+      this.addToastMsg(this.doAction)
+    }
+  },
+  methods: {
+    addToastMsg (action) {
+      this.toastMsgList.unshift(this.toastInnerMsg[action])
+      setTimeout(() => {
+        this.toastMsgList.pop()
+      }, 1500)
+    },
+    clearToast (idx) {
+      this.toastMsgList.splice(idx, 1)
     }
   }
 }

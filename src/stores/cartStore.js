@@ -10,8 +10,10 @@ export default defineStore('cartStore', {
   state: () => ({
     // 購物車清單
     cartsList: [],
+    // 顯示 toast
+    toastState: true,
     // 動作成功提示
-    showToast: false
+    doAction: null
   }),
   actions: {
     // 加入購物車
@@ -31,7 +33,8 @@ export default defineStore('cartStore', {
       axios.post(url, item)
         .then(res => {
           // 提示訊息
-          this.showToast = !this.showToast
+          this.toastState = !this.toastState
+          this.doAction = 'addToCart'
           // 重整購物車
           this.getCartsList()
         })
@@ -84,7 +87,8 @@ export default defineStore('cartStore', {
       axios.put(url, item)
         .then(res => {
           // 提示訊息
-          this.showToast = !this.showToast
+          this.toastState = !this.toastState
+          this.doAction = 'updateCart'
           // 重整購物車
           this.getCartsList()
         })
@@ -112,7 +116,8 @@ export default defineStore('cartStore', {
       axios.delete(url)
         .then(res => {
           // 提示訊息
-          this.showToast = !this.showToast
+          this.toastState = !this.toastState
+          this.doAction = 'deleteCartItem'
           // 重整購物車
           this.getCartsList()
         })
