@@ -33,18 +33,12 @@
 
 <script>
 import toastComponent from '@/components/toastComponent.vue'
-import allProductStore from '@/stores/allProductStore.js'
-import { mapActions } from 'pinia'
 
 export default {
   data () {
     return {
       isLoggedin: 'false'
     }
-  },
-  methods: {
-    // 取得所有產品資料，生成產品與分類資料
-    ...mapActions(allProductStore, ['getAllProducts'])
   },
   mounted () {
     // 取得 cookie
@@ -57,9 +51,6 @@ export default {
     if (!token) {
       this.isLoggedin = !this.isLoggedin
     }
-
-    // 取得所有產品資料
-    this.getAllProducts()
   },
   components: {
     toastComponent
