@@ -50,6 +50,7 @@
 
 <script>
 import cartStore from '@/stores/cartStore.js'
+import allProductStore from '@/stores/allProductStore.js'
 import { mapActions } from 'pinia'
 import paginationComponent from '@/components/paginationComponent.vue'
 import filterCategory from '@/components/filterCategory.vue'
@@ -68,8 +69,10 @@ export default {
   methods: {
     // 加入購物車
     ...mapActions(cartStore, ['addToCart']),
+    // 取得所有產品資料，生成產品與分類資料
+    ...mapActions(allProductStore, ['getAllProducts']),
 
-    // 獲取產品列表
+    // 取得分頁產品列表
     getProductList (page = 1, category) {
       let url = `${VITE_API}/api/${VITE_PATH}/products?page=${page}`
       if (category) { url += `&category=${category}` }
@@ -96,7 +99,10 @@ export default {
     }
   },
   mounted () {
+    // 取得分頁產品列表
     this.getProductList()
+    // 取得所有產品資料
+    this.getAllProducts()
   },
   components: {
     paginationComponent,
