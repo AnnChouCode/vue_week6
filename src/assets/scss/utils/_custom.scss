@@ -10,3 +10,33 @@ label.has-required::before {
 .swal2-container {
     z-index: 9999
 }
+
+// 暗色 navlink
+.theme-dark-navlink-hover{
+    &:hover{
+        color:white;
+        // border-bottom: 1px solid white;
+        display: block;
+        background-color: gray;
+        border-radius: 10px;
+        padding-right:5px;
+        padding-left:5px;
+    }
+
+    &:active{
+        color:white;
+        // border-bottom: 1px solid white;
+        display: block;
+        background-color: gray;
+        border-radius: 10px;
+        padding-right:5px;
+        padding-left:5px;
+    }
+}
+
+// 圖片顯示方形，整體不變形
+.img-radio-1x1 {
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    object-position: center;
+  }
