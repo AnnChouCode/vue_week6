@@ -1,7 +1,7 @@
 <template>
     <div class="d-flex">
         <!-- 導覽列 -->
-        <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark vh-100" style="width: 280px;">
+        <div class="position-sticky vh-100 d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="width: 280px;">
         <router-link to="/admin/dashboard" class="fs-4 mb-3 mb-md-0 me-md-auto text-white">Dashboard</router-link>
 
         <hr>
@@ -32,6 +32,14 @@
 export default {
   methods: {
     checkLogin () {
+      // 取得 cookie
+      const token = document.cookie
+        .split('; ')
+        .find((row) => row.startsWith('user='))
+        ?.split('=')[1]
+
+      this.axios.defaults.headers.common.Authorization = token
+
       const { VITE_API } = import.meta.env
       const url = `${VITE_API}/api/user/check`
 
@@ -47,7 +55,9 @@ export default {
               text: err.response.data.message
             }
           )
-            .then(() => this.$router.push('/home'))
+            .then(() => {
+              this.$router.push('/home')
+            })
         })
     },
     logout () {
@@ -56,14 +66,6 @@ export default {
     }
   },
   mounted () {
-    // 取得 cookie
-    const token = document.cookie
-      .split('; ')
-      .find((row) => row.startsWith('user='))
-      ?.split('=')[1]
-
-    this.axios.defaults.headers.common.Authorization = token
-
     // 確認是否登入
     this.checkLogin()
   }
