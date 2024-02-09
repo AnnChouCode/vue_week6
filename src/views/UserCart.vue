@@ -176,10 +176,11 @@ export default {
       // 刪除前提示詢問
       this.$swal.fire({
         title: '確定要清空購物車嗎？',
+        text: '這個動作無法復原',
         icon: 'question',
         showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
+        confirmButtonColor: '#000000',
+        cancelButtonColor: 'gray',
         confirmButtonText: 'OK'
       }).then((result) => {
         // 確認刪除
