@@ -80,6 +80,18 @@ const routes = [
         meta: {
           title: '訂單管理 - Dessert Time'
         }
+      },
+      {
+        path: '/admin/productinfo/:id',
+        component: () => import('../views/admin/AdminProductInfo.vue'),
+        props: (route) => {
+          return {
+            id: route.params.id
+          }
+        },
+        meta: {
+          title: '使用者後台 - Dessert Time'
+        }
       }
     ]
   },
