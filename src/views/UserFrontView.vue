@@ -2,7 +2,7 @@
     <nav class="navbar navbar-expand-lg  navbar-dark bg-dark">
     <div class="container-fluid">
       <a href="#/home">
-        <h1 class="mb-0 me-5 fs-4 text-white">Shopping Time</h1>
+        <h1 class="mb-0 me-5 fs-4 text-white">Dessert Time</h1>
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
         aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
