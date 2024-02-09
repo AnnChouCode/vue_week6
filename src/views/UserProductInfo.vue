@@ -1,11 +1,13 @@
 <template>
     <div class="container" v-if="product.productInfo">
         <h2 class="py-5 h2 text-center">{{product.productInfo.title}}</h2>
-        <div class="modal-body">
+        <div>
                <div class="row">
                  <div class="col-sm-6">
+                     <!-- 主圖 -->
                     <img class="img-fluid" :src="product.currentImage" :alt="product">
-                    <div>
+                    <!-- 圖片庫 -->
+                    <div v-if="product.imagesStock">
                         <a href="#" v-for="(img, idx) in product.imagesStock" :key="'img' + idx" @click.prevent="changeImage(idx)">
                         <img :src="img" alt="productImg" class="img-store m-1" :class="img === product.currentImage ? 'border border-3 border-primary' : '' ">
                         </a>
@@ -57,7 +59,7 @@ export default {
       this.product.currentImage = this.product.imagesStock[idx]
     }
   },
-  created () {
+  mounted () {
     const id = this.$route.params.id
 
     const url = `${VITE_API}/api/${VITE_PATH}/product/${id}`
@@ -68,8 +70,11 @@ export default {
         const resData = res.data.product
         this.product = {
           productInfo: resData,
-          currentImage: resData.imageUrl,
-          imagesStock: [resData.imageUrl, ...resData.imagesUrl]
+          currentImage: resData.imageUrl
+        }
+
+        if (resData.imagesUrl) {
+          this.product.imagesStock = [resData.imageUrl, ...resData.imagesUrl]
         }
       })
       .catch(err => console.log(err.response.data.message))
