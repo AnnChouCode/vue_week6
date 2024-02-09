@@ -4,8 +4,9 @@
     <div>
       <div class="mb-5">
         <h5 class="mb-3 h5 fw-bold">商品圖片</h5>
+        <p class="mb-3">※ 建議上傳方形圖片，以免影響前台效果</p>
         <div class="row g-1 mb-3">
-          <div class="col-3">
+          <div class="col-6 col-md-2">
             <div class="position-relative border border-1">
               <button
                 type="button"
@@ -20,14 +21,14 @@
                 封面圖片
               </div>
               <img
-                class="d-block mx-auto productmodal-imgstock"
+                class="d-block mx-auto img-radio-1x1"
                 :src="productInfo.imageUrl"
                 alt="picture"
               />
             </div>
           </div>
           <div
-            class="col-3"
+            class="col-6 col-md-2"
             v-for="(img, idx) in productInfo.imagesUrl"
             :key="idx"
           >
@@ -40,15 +41,15 @@
                 <i class="bi bi-trash"></i>
               </button>
               <img
-                class="d-block mx-auto productmodal-imgstock"
+                class="d-block mx-auto img-radio-1x1"
                 :src="img"
                 alt="picture"
               />
             </div>
           </div>
-          <div class="col-3">
+          <div class="col-6 col-md-2">
             <div
-              class="d-flex align-items-center justify-content-center border border-1 productmodal-imgstock"
+              class="d-flex align-items-center justify-content-center border border-1 img-radio-1x1"
             >
               <p class="text-secondary">新增圖片</p>
             </div>
@@ -193,7 +194,4 @@ export default {
 </script>
 
 <style>
-.productmodal-imgstock {
-  height: 150px;
-}
 </style>
