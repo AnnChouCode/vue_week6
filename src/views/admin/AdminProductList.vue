@@ -3,9 +3,7 @@
     <div class="d-flex justify-content-between py-5">
       <h2 class="h2">產品列表</h2>
       <!-- btn 建立新產品 -->
-      <button class="btn btn-dark text-white" @click="openModal('create')">
-        建立新的產品
-      </button>
+      <button class="btn btn-dark text-white">建立新的產品</button>
     </div>
     <!-- 產品列表 -->
     <div>
@@ -60,7 +58,11 @@
                   <i class="bi bi-pencil text-success"></i>
                 </button>
                 <!-- 刪除產品 -->
-                <button type="button" class="btn">
+                <button
+                  type="button"
+                  class="btn"
+                  @click="deleteProduct(product.id)"
+                >
                   <i class="bi bi-trash text-danger"></i>
                 </button>
                 <!-- 開產品資訊頁 -->
@@ -87,15 +89,10 @@
       ></paginationComponent>
     </div>
   </div>
-
-  <!-- 產品 modal -->
-  <productModal ref="productModal"></productModal>
 </template>
 
 <script>
 import paginationComponent from '@/components/paginationComponent.vue'
-
-// import productModal from '@/components/productModal.vue'
 
 const { VITE_API, VITE_PATH } = import.meta.env
 
@@ -131,15 +128,51 @@ export default {
         })
     },
 
-    // 開啟 productModal
-    openModal (action, item) {
-      this.$refs.productModal.openModal(action, item)
-    },
-
     // 觀看產品頁
     showProductInfo (id) {
-      console.log(id)
       this.$router.push(`/admin/productinfo/${id}`)
+    },
+
+    // 刪除產品
+    deleteProduct (id) {
+      const url = `${VITE_API}/api/${VITE_PATH}/admin/product/${id}`
+
+      // 刪除前詢問
+      this.$swal
+        .fire({
+          title: '確定要刪除產品嗎？',
+          text: '這個動作無法復原',
+          icon: 'question',
+          showCancelButton: true,
+          confirmButtonColor: '#000000',
+          cancelButtonColor: 'gray',
+          confirmButtonText: 'OK'
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            // 開啟 loading
+            const loader = this.$loading.show()
+
+            this.axios
+              .delete(url)
+              .then((res) => {
+                // 提示訊息
+                this.$swal.fire(res.data.message)
+                // 重整購物車
+                this.getProductList()
+              })
+              .catch((err) => {
+                this.$swal.fire({
+                  icon: 'error',
+                  text: err.response.data.message
+                })
+              })
+              .finally(() => {
+                // 關閉 loading
+                loader.hide()
+              })
+          }
+        })
     }
   },
   mounted () {
@@ -147,7 +180,6 @@ export default {
   },
   components: {
     paginationComponent
-    // productModal
   }
 }
 </script>
