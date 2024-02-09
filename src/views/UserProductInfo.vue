@@ -5,7 +5,7 @@
                <div class="row">
                  <div class="col-sm-6">
                      <!-- 主圖 -->
-                    <img class="img-fluid" :src="product.currentImage" :alt="product">
+                    <img class="d-block img-fluid mx-auto" :src="product.currentImage" :alt="product" style="max-height:500px;">
                     <!-- 圖片庫 -->
                     <div v-if="product.imagesStock">
                         <a href="#" v-for="(img, idx) in product.imagesStock" :key="'img' + idx" @click.prevent="changeImage(idx)">
@@ -14,7 +14,7 @@
                     </div>
                  </div>
                     <div class="col-sm-6">
-                    <span class="mb-4 badge bg-primary rounded-pill">{{ product.productInfo.category }}</span>
+                    <span class="mb-4 badge bg-dark rounded-pill">{{ product.productInfo.category }}</span>
                     <p class="mb-2">商品描述：{{ product.productInfo.description }}</p>
                     <p class="mb-4">商品內容：{{ product.productInfo.content }}</p>
                     <div class="mb-4">
@@ -26,7 +26,7 @@
                         <div class="input-group">
                         <input type="number" class="form-control"
                         v-model.number="qty" min="1">
-                        <button type="button" class="btn btn-primary" @click="addToCart(product.productInfo.id, qty)">加入購物車</button>
+                        <button type="button" class="btn btn-dark" @click="addToCart(product.productInfo.id, qty)">加入購物車</button>
                         </div>
                     </div>
                 </div>
