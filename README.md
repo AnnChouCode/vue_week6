@@ -76,6 +76,10 @@ npm run deploy
 - sass (^1.69.7)
 - vite (^5.0.10)
 - vite-plugin-eslint (^1.8.1)
+- swiper (^11.0.5)
+- vee-validate (^4.12.5)
+- vue-loading-overlay (6.0)
+- vue-sweetalert2 (^5.0.5)
 
 ## 資料夾結構
 
