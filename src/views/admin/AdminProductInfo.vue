@@ -7,11 +7,12 @@
         <p class="mb-3">※ 建議上傳方形圖片，以免影響前台效果</p>
         <div class="row g-1 mb-3">
           <div class="col-6 col-md-2">
-            <div class="position-relative border border-1">
+            <div class="position-relative border border-1 h-100">
               <button
                 type="button"
                 class="position-absolute top-0 end-0 d-flex justify-content-center align-items-center mt-2 me-2 btn btn-light"
                 style="width: 36px; height: 36px"
+                @click="deleteImage('imageUrl', idx)" v-if="tempProductInfo.imageUrl"
               >
                 <i class="bi bi-trash"></i>
               </button>
@@ -20,16 +21,20 @@
               >
                 封面圖片
               </div>
-              <img
+              <img v-if="tempProductInfo.imageUrl"
                 class="d-block mx-auto img-radio-1x1"
-                :src="productInfo.imageUrl"
+                :src="tempProductInfo.imageUrl"
                 alt="picture"
               />
+              <div v-else class="d-flex flex-column align-items-center justify-content-center h-100 bg-light">
+                <i class="bi bi-image mb-2"></i>
+                <p>目前無封面</p>
+              </div>
             </div>
           </div>
           <div
             class="col-6 col-md-2"
-            v-for="(img, idx) in productInfo.imagesUrl"
+            v-for="(img, idx) in tempProductInfo.imagesUrl"
             :key="idx"
           >
             <div class="position-relative border border-1">
@@ -37,6 +42,7 @@
                 type="button"
                 class="position-absolute top-0 end-0 d-flex justify-content-center align-items-center mt-2 me-2 btn btn-light"
                 style="width: 36px; height: 36px"
+                @click="deleteImage('imagesUrl', idx)"
               >
                 <i class="bi bi-trash"></i>
               </button>
@@ -48,18 +54,17 @@
             </div>
           </div>
           <div class="col-6 col-md-2">
-            <div
-              class="d-flex align-items-center justify-content-center border border-1 img-radio-1x1"
-            >
-              <p class="text-secondary">新增圖片</p>
-            </div>
+            <button  @click="openImageModal" class="d-flex align-items-center justify-content-center border border-1 img-radio-1x1 w-100 text-secondary" type="button">
+新增圖片
+            </button>
           </div>
         </div>
-        <button typs="button" class="p-0 btn text-danger">
+        <button typs="button" class="p-0 btn text-danger" @click="deleteImage">
           <i class="bi bi-trash me-2"></i>
           <span>刪除所有圖片</span>
         </button>
       </div>
+      {{ tempProductInfo }}
       <div>
         <h5 class="mb-3 h5 fw-bold">商品基本資訊</h5>
         <form class="d-flex flex-column gap-3">
@@ -70,7 +75,7 @@
               id="name"
               class="form-control"
               placeholder="請輸入商品名稱"
-              v-model="productInfo.title"
+              v-model="tempProductInfo.title"
             />
           </div>
           <div class="row">
@@ -79,9 +84,24 @@
               <input
                 type="text"
                 id="category"
-                class="form-control"
+                class="form-control mb-1"
                 placeholder="請輸入商品分類"
+                v-model="tempProductInfo.category"
               />
+              <div class="d-flex align-items-center text-nowrap">
+                <span>點擊帶入分類：</span>
+                <div class="d-flex gap-1 mb-0 flex-wrap">
+                  <button
+                    class="btn btn-light rounded-pill py-1"
+                    v-for="(item, idx) in tempCategoryList"
+                    value="item"
+                    :key="idx"
+                    @click="chooseCategory(item)"
+                  >
+                    {{ item }}
+                  </button>
+                </div>
+              </div>
             </div>
             <div class="col-md-6">
               <label for="unit" class="form-label fw-bold">商品單位</label>
@@ -90,7 +110,7 @@
                 id="unit"
                 class="form-control"
                 placeholder="請輸入商品單位"
-                v-model="productInfo.unit"
+                v-model="tempProductInfo.unit"
               />
             </div>
           </div>
@@ -102,7 +122,7 @@
                 id="origin_price"
                 class="form-control"
                 placeholder="請輸入原價"
-                v-model.number="productInfo.origin_price"
+                v-model.number="tempProductInfo.origin_price"
               />
             </div>
             <div class="col-md-6">
@@ -112,7 +132,7 @@
                 id="price"
                 class="form-control"
                 placeholder="請輸入商品售價"
-                v-model.number="productInfo.price"
+                v-model.number="tempProductInfo.price"
               />
             </div>
           </div>
@@ -123,7 +143,7 @@
               id="description"
               class="form-control"
               placeholder="請輸入商品描述"
-              v-model="productInfo.description"
+              v-model="tempProductInfo.description"
             ></textarea>
           </div>
           <div>
@@ -133,7 +153,7 @@
               id="content"
               class="form-control"
               placeholder="請輸入說明內容"
-              v-model="productInfo.content"
+              v-model="tempProductInfo.content"
             ></textarea>
           </div>
         </form>
@@ -150,11 +170,15 @@
       <button type="button" class="btn btn-dark text-white">確認</button>
     </div>
   </div>
+
+  <uploadImageModal ref="uploadImageModal"></uploadImageModal>
 </template>
 
 <script>
 import { useAllAdminProductsStore } from '@/stores/allAdminProductStore.js'
 import { mapStores } from 'pinia'
+import uploadImageModal from '@/components/uploadImageModal.vue'
+
 const productsStore = useAllAdminProductsStore()
 
 // import { mapState, mapActions, mapStores } from 'pinia'
@@ -165,33 +189,63 @@ export default {
   data () {
     return {
       // 產品資訊
-      productInfo: {}
+      tempProductInfo: {},
+      // 產品分類列表
+      tempCategoryList: []
     }
   },
   methods: {
     // 取得該頁產品資料
     getProductInfo (datas, id) {
-      this.productInfo = datas[id]
-      console.log(this.productInfo)
+      this.tempProductInfo = datas[id]
+      console.log('productInfo 的 getProductInfo', this.tempProductInfo)
+    },
+
+    // 選擇分類帶入
+    chooseCategory (item) {
+      this.tempProductInfo.category = item
+    },
+
+    // 刪除圖片
+    deleteImage (target, idx) {
+      if (target === 'imageUrl') {
+        this.tempProductInfo.imageUrl = ''
+      } else if (target === 'imagesUrl') {
+        this.tempProductInfo.imagesUrl.splice(idx, 1)
+      } else {
+        this.tempProductInfo.imageUrl = ''
+        this.tempProductInfo.imagesUrl = []
+      }
+    },
+
+    // 開啟圖片處理 modal
+    openImageModal () {
+      this.$refs.uploadImageModal.openModal()
     }
   },
   computed: {
     ...mapStores(useAllAdminProductsStore)
   },
+  components: {
+    uploadImageModal
+  },
   mounted () {
+    console.log('ProductInfo 的 mounted')
     const id = this.$route.params.id
 
     productsStore
       .getAllProducts()
-      .then((allProducts) => {
-        this.getProductInfo(allProducts, id)
+      .then((res) => {
+        console.log('productInfo 拿到 store 給的資料了', res)
+        this.getProductInfo(productsStore.allProducts, id)
+        this.tempCategoryList = [...productsStore.categoryList]
       })
       .catch((err) => {
         console.error('Failed to fetch products:', err)
       })
+    this.$refs.uploadImageModal.openModal()
   }
 }
 </script>
 
-<style>
-</style>
+<style></style>
