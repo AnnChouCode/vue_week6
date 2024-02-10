@@ -5,6 +5,7 @@ const routes = [
     path: '/',
     redirect: 'home',
     component: () => import('../views/UserFrontView.vue'),
+    meta: { navbarType: 'frontend' },
     children: [
       {
         path: 'home',
@@ -56,6 +57,7 @@ const routes = [
     path: '/admin',
     redirect: '/admin/dashboard',
     component: () => import('../views/admin/AdminLayout.vue'),
+    meta: { navbarType: 'backend' },
     children: [
       {
         path: '/admin/dashboard',
@@ -106,8 +108,16 @@ const routes = [
 
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
-  linkActiveClass: 'active',
   routes,
+  linkActiveClass: (route) => {
+    if (route.meta.navbarType === 'backend') {
+      return 'theme-dark-navlink-active'
+    } else if (route.meta.navbarType === 'frontend') {
+      return 'text-danger'
+    } else {
+      return 'active'
+    }
+  },
   // 對於所有路由導航，簡單地讓頁面滾動到頂部
   scrollBehavior (to, from, savedPosition) {
     return {
