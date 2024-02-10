@@ -21,25 +21,38 @@
     <div class="collapse" id="collapseAdminMenu">
       <ul class="navbar-nav text-center gap-3 pt-3">
         <li>
-          <router-link to="/admin/dashboard" class="py-2 theme-dark-navlink-hover text-white"
+          <router-link
+            to="/admin/dashboard"
+            class="py-2 theme-dark-navlink text-white"
             >Home</router-link
           >
         </li>
         <li>
-          <router-link to="/admin/products" class="py-2 theme-dark-navlink-hover text-white"
+          <router-link
+            to="/admin/products"
+            class="py-2 theme-dark-navlink text-white"
             >產品列表</router-link
           >
         </li>
         <li>
-          <router-link to="/admin/orders" class="py-2 theme-dark-navlink-hover text-white"
+          <router-link
+            to="/admin/orders"
+            class="py-2 theme-dark-navlink text-white"
             >訂單列表</router-link
           >
         </li>
       </ul>
       <hr style="border: 1px solid white" />
       <div class="navbar-nav text-center gap-3">
-        <router-link to="/home" class="py-2 text-white theme-dark-navlink-hover">回前台</router-link>
-        <a href="#" @click.prevent="logout" class="py-2 text-white theme-dark-navlink-hover">登出</a>
+        <router-link to="/home" class="py-2 text-white theme-dark-navlink"
+          >回前台</router-link
+        >
+        <a
+          href="#"
+          @click.prevent="logout"
+          class="py-2 text-white theme-dark-navlink"
+          >登出</a
+        >
       </div>
     </div>
   </nav>
@@ -48,7 +61,7 @@
     <div class="row">
       <!-- 導覽列-web -->
       <div
-        class="position-sticky vh-100 d-none d-lg-flex flex-column col-lg-2 p-3 text-white bg-dark"
+        class="position-sticky top-0 d-none d-lg-flex flex-column col-lg-2 p-3 text-white bg-dark vh-100"
       >
         <router-link
           to="/admin/dashboard"
@@ -59,31 +72,47 @@
         <hr />
         <ul class="nav flex-column mb-auto gap-3">
           <li>
-            <router-link to="/admin/dashboard" class="py-2 theme-dark-navlink-hover text-white"
+            <router-link
+              to="/admin/dashboard"
+              class="py-2 theme-dark-navlink text-white"
               >Home</router-link
             >
           </li>
           <li>
-            <router-link to="/admin/products" class="py-2 theme-dark-navlink-hover text-white"
+            <router-link
+              to="/admin/products"
+              class="py-2 theme-dark-navlink text-white"
               >產品列表</router-link
             >
           </li>
           <li>
-            <router-link to="/admin/orders" class="py-2 theme-dark-navlink-hover text-white"
+            <router-link
+              to="/admin/orders"
+              class="py-2 theme-dark-navlink text-white"
               >訂單列表</router-link
             >
           </li>
         </ul>
         <hr />
         <div class="d-flex flex-column">
-          <router-link to="/home" class="py-2 theme-dark-navlink-hover text-white">回前台</router-link>
-          <a href="#" @click.prevent="logout" class="py-2 theme-dark-navlink-hover text-white">登出</a
+          <router-link
+            to="/home"
+            class="py-2 theme-dark-navlink text-white"
+            >回前台</router-link
+          >
+          <a
+            href="#"
+            @click.prevent="logout"
+            class="py-2 theme-dark-navlink text-white"
+            >登出</a
           >
         </div>
       </div>
 
       <!-- 顯示區 -->
-      <router-view class="col col-lg-10 p-3"></router-view>
+      <div class="col col-lg-10 p-3">
+        <router-view></router-view>
+      </div>
     </div>
   </div>
 </template>
@@ -92,14 +121,6 @@
 export default {
   methods: {
     checkLogin () {
-      // 取得 cookie
-      const token = document.cookie
-        .split('; ')
-        .find((row) => row.startsWith('user='))
-        ?.split('=')[1]
-
-      this.axios.defaults.headers.common.Authorization = token
-
       const { VITE_API } = import.meta.env
       const url = `${VITE_API}/api/user/check`
 
@@ -107,7 +128,7 @@ export default {
       this.axios
         .post(url)
         .then(function (res) {
-          console.log('歡迎')
+          console.log('歡迎登入')
         })
         .catch((err) => {
           this.$swal
@@ -125,7 +146,16 @@ export default {
       this.$router.push('/home')
     }
   },
-  mounted () {
+  created () {
+    // 取得 cookie
+    const token = document.cookie
+      .split('; ')
+      .find((row) => row.startsWith('user='))
+      ?.split('=')[1]
+
+    this.axios.defaults.headers.common.Authorization = token
+    console.log('adminLayout token get')
+
     // 確認是否登入
     this.checkLogin()
   }
