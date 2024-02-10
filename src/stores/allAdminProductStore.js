@@ -21,8 +21,8 @@ export const useAllAdminProductsStore = defineStore('adminProducts', {
         .then(res => {
           this.allProducts = res.data.products
           this.getCategoryList()
-
-          return res.data.products // 要傳回的資料
+          console.log('productStore 拿到產品資料了')
+          return res // 要傳回的資料
         })
         .catch(err => {
           swal.fire(
@@ -39,7 +39,6 @@ export const useAllAdminProductsStore = defineStore('adminProducts', {
       const products = Object.values(this.allProducts)
       const categoryList = new Set(products.map(item => item.category))
       this.categoryList = [...categoryList]
-      console.log(this.categoryList)
     }
   }
 })
