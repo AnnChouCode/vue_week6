@@ -92,8 +92,11 @@
 </template>
 
 <script>
+import { useAdminLoginStore } from '@/stores/adminLoginStore.js'
+import { mapStores } from 'pinia'
 import paginationComponent from '@/components/paginationComponent.vue'
 
+const adminLoginStore = useAdminLoginStore()
 const { VITE_API, VITE_PATH } = import.meta.env
 
 export default {
@@ -175,8 +178,18 @@ export default {
         })
     }
   },
+  computed: {
+    ...mapStores(useAdminLoginStore)
+  },
   mounted () {
-    this.getProductList()
+    console.log('AdminProductList 的 mounted，即將執行確認登入')
+    console.log(adminLoginStore)
+    adminLoginStore
+      .checkLogin()
+      .then((res) => {
+        console.log('AdminProductList 拿到登入的資料了', res)
+        this.getProductList()
+      })
   },
   components: {
     paginationComponent

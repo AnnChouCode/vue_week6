@@ -175,10 +175,12 @@
 </template>
 
 <script>
+import { useAdminLoginStore } from '@/stores/adminLoginStore.js'
 import { useAllAdminProductsStore } from '@/stores/allAdminProductStore.js'
 import { mapStores } from 'pinia'
 import uploadImageModal from '@/components/uploadImageModal.vue'
 
+const adminLoginStore = useAdminLoginStore()
 const productsStore = useAllAdminProductsStore()
 
 // import { mapState, mapActions, mapStores } from 'pinia'
@@ -221,29 +223,60 @@ export default {
     // 開啟圖片處理 modal
     openImageModal () {
       this.$refs.uploadImageModal.openModal()
+    },
+
+    // 獲取所有資料
+    async fetchData () {
+      try {
+        // 確認登入
+        await adminLoginStore.checkLogin()
+        console.log('productInfo 確認登入')
+
+        // 獲取所有產品資料
+        const products = await productsStore.getAllProducts()
+        console.log('productInfo 拿到 productStore 給的資料了', products)
+
+        // 獲取此頁產品資料
+        const id = this.$route.params.id
+        this.getProductInfo(productsStore.allProducts, id)
+        this.tempCategoryList = [...productsStore.categoryList]
+      } catch (err) {
+        console.log(err.response.data.message)
+      }
     }
   },
   computed: {
+    ...mapStores(useAdminLoginStore),
     ...mapStores(useAllAdminProductsStore)
   },
   components: {
     uploadImageModal
   },
   mounted () {
-    console.log('ProductInfo 的 mounted')
-    const id = this.$route.params.id
+    console.log('ProductInfo 的 mounted，即將執行確認登入')
+    // console.log('ProductInfo 的 mounted')
+    // 獲取所有資料
+    this.fetchData()
+    // // 登入確認
+    // adminLoginStore
+    //   .checkLogin()
+    //   .then((res) => {
+    //     console.log('ProductInfo 拿到登入的資料了', res)
+    //     productsStore.getAllProducts()
+    //   })
 
-    productsStore
-      .getAllProducts()
-      .then((res) => {
-        console.log('productInfo 拿到 store 給的資料了', res)
-        this.getProductInfo(productsStore.allProducts, id)
-        this.tempCategoryList = [...productsStore.categoryList]
-      })
-      .catch((err) => {
-        console.error('Failed to fetch products:', err)
-      })
-    this.$refs.uploadImageModal.openModal()
+    // // 取得產品資料
+    // productsStore
+    //   .getAllProducts()
+    //   .then((res) => {
+    //     console.log('productInfo 拿到 productStore 給的資料了', res)
+    //     this.getProductInfo(productsStore.allProducts, id)
+    //     this.tempCategoryList = [...productsStore.categoryList]
+    //   })
+    //   .catch((err) => {
+    //     console.error('Failed to fetch products:', err)
+    //   })
+    // this.$refs.uploadImageModal.openModal()
   }
 }
 </script>
