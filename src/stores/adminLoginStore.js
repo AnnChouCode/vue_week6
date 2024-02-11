@@ -23,13 +23,6 @@ export const useAdminLoginStore = defineStore('adminLogin', {
       return axios
         .post(url)
         .then(function (res) {
-          console.log('歡迎登入')
-          swal.fire(
-            {
-              icon: 'success',
-              text: '歡迎登入'
-            }
-          )
           return res // 傳回資料
         })
         .catch((err) => {

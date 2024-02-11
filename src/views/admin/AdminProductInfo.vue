@@ -183,10 +183,6 @@ import uploadImageModal from '@/components/uploadImageModal.vue'
 const adminLoginStore = useAdminLoginStore()
 const productsStore = useAllAdminProductsStore()
 
-// import { mapState, mapActions, mapStores } from 'pinia'
-
-// const { VITE_API, VITE_PATH } = import.meta.env
-
 export default {
   data () {
     return {
@@ -254,29 +250,8 @@ export default {
   },
   mounted () {
     console.log('ProductInfo 的 mounted，即將執行確認登入')
-    // console.log('ProductInfo 的 mounted')
     // 獲取所有資料
     this.fetchData()
-    // // 登入確認
-    // adminLoginStore
-    //   .checkLogin()
-    //   .then((res) => {
-    //     console.log('ProductInfo 拿到登入的資料了', res)
-    //     productsStore.getAllProducts()
-    //   })
-
-    // // 取得產品資料
-    // productsStore
-    //   .getAllProducts()
-    //   .then((res) => {
-    //     console.log('productInfo 拿到 productStore 給的資料了', res)
-    //     this.getProductInfo(productsStore.allProducts, id)
-    //     this.tempCategoryList = [...productsStore.categoryList]
-    //   })
-    //   .catch((err) => {
-    //     console.error('Failed to fetch products:', err)
-    //   })
-    // this.$refs.uploadImageModal.openModal()
   }
 }
 </script>

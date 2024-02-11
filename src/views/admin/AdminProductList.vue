@@ -176,6 +176,19 @@ export default {
               })
           }
         })
+    },
+
+    // 獲取資料
+    async fetchData () {
+      try {
+        // 確認登入
+        await adminLoginStore.checkLogin()
+        console.log('productList 確認登入')
+        // 獲取產品列表
+        this.getProductList()
+      } catch (err) {
+        console.log(err.response.data.message)
+      }
     }
   },
   computed: {
@@ -183,13 +196,9 @@ export default {
   },
   mounted () {
     console.log('AdminProductList 的 mounted，即將執行確認登入')
-    console.log(adminLoginStore)
-    adminLoginStore
-      .checkLogin()
-      .then((res) => {
-        console.log('AdminProductList 拿到登入的資料了', res)
-        this.getProductList()
-      })
+
+    // 獲取資料
+    this.fetchData()
   },
   components: {
     paginationComponent

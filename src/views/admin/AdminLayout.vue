@@ -122,46 +122,12 @@ const adminLoginStore = useAdminLoginStore()
 
 export default {
   methods: {
-    // checkLogin () {
-    //   const { VITE_API } = import.meta.env
-    //   const url = `${VITE_API}/api/user/check`
-
-    //   // 取得 cookie
-    //   const token = document.cookie
-    //     .split('; ')
-    //     .find((row) => row.startsWith('user='))
-    //     ?.split('=')[1]
-
-    //   this.axios.defaults.headers.common.Authorization = token
-    //   console.log('adminLayout token get')
-
-    //   // 確認是否登入
-    //   this.axios
-    //     .post(url)
-    //     .then(function (res) {
-    //       console.log('歡迎登入')
-    //     })
-    //     .catch((err) => {
-    //       this.$swal
-    //         .fire({
-    //           icon: 'error',
-    //           text: err.response.data.message
-    //         })
-    //         .then((result) => {
-    //           this.$router.push('/home')
-    //         })
-    //     })
-    // },
     logout () {
-      adminLoginStore.checkout()
+      adminLoginStore.logout()
     }
   },
   computed: {
     ...mapStores(useAdminLoginStore)
   }
-  // created () {
-  //   // 確認是否登入
-  //   this.checkLogin()
-  // }
 }
 </script>
