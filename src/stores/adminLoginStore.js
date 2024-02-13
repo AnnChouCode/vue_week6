@@ -35,12 +35,13 @@ export const useAdminLoginStore = defineStore('adminLogin', {
               this.$router.push('/home')
             })
         })
-    },
+    }
 
     // 登入
-    logout () {
-      document.cookie = 'user=;expires=;'
-      this.$router.push('/home')
-    }
+    // logout () {
+    //   document.cookie = 'user=;expires=;'
+    //   console.log(this)
+    //   this.router.push('/home')
+    // }
   }
 })
