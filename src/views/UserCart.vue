@@ -94,6 +94,25 @@
           </div>
 
           <div class="mb-3">
+            <label for="payment" class="form-label has-required">請選擇付款方式</label>
+            <v-field
+              id="payment"
+              name="payment"
+              class="form-control"
+              :class="{ 'is-invalid': errors['payment'] }"
+              placeholder="請選擇付款方式"
+              rules="required"
+              v-model="form.user.payment"
+              as="select"
+            >
+              <option value="">請選擇付款方式</option>
+              <option value="credit_card">信用卡付款</option>
+              <option value="ATM">ATM 付款</option>
+            </v-field>
+            <error-message name="payment" class="invalid-feedback"></error-message>
+          </div>
+
+          <div class="mb-3">
             <label for="message" class="form-label">留言</label>
             <v-field id="message" name="message" class="form-control" cols="30" rows="10" v-model="form.message"
               as="textarea"></v-field>
