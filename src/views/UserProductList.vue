@@ -44,7 +44,10 @@
           </tbody>
         </table>
         <!-- 頁碼 -->
-        <paginationComponent :pagination="pagination" @get-Product-List="getProductList"></paginationComponent>
+        <paginationComponent
+        :pagination="pagination"
+        @get-List="getProductList"
+      ></paginationComponent>
     </div>
 </template>
 

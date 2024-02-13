@@ -1,9 +1,9 @@
 <template>
   <div class="container overflow-y-scroll scrollbar-y-hide vh-100">
     <div class="d-flex justify-content-between py-5">
-      <h2 class="h2">產品列表</h2>
+      <h2 class="h2 fw-bold">產品列表</h2>
       <!-- btn 建立新產品 -->
-      <button class="btn btn-dark text-white">建立新的產品</button>
+      <router-link to="/admin/productinfo/new" class="btn btn-dark">建立新的產品</router-link>
     </div>
     <!-- 產品列表 -->
     <div>
@@ -22,11 +22,8 @@
           <tr v-for="product in productsList" :key="product.id">
             <td style="width: 200px">
               <div
-                style="
-                  height: 100px;
-                  background-size: cover;
-                  background-position: center;
-                "
+                class="bg-img-cover bg-img-center"
+                style="height: 100px;"
                 :style="{ backgroundImage: `url(${product.imageUrl})` }"
               ></div>
             </td>
@@ -53,7 +50,7 @@
                 <button
                   type="button"
                   class="btn"
-                  @click="showProductInfo(product.id)"
+                  @click="showProductPage(product.id)"
                 >
                   <i class="bi bi-pencil text-success"></i>
                 </button>
@@ -83,10 +80,7 @@
         </tbody>
       </table>
       <!-- 頁碼 -->
-      <paginationComponent
-        :pagination="pagination"
-        @get-Product-List="getProductList"
-      ></paginationComponent>
+      <paginationComponent :pagination="pagination" @get-List="getProductList"></paginationComponent>
     </div>
   </div>
 </template>
@@ -132,7 +126,7 @@ export default {
     },
 
     // 觀看產品頁
-    showProductInfo (id) {
+    showProductPage (id) {
       this.$router.push(`/admin/productinfo/${id}`)
     },
 
