@@ -14,8 +14,7 @@ label.has-required::before {
 // 暗色 navlink
 .theme-dark-navlink {
   &:hover {
-    color: white;
-    // border-bottom: 1px solid white;
+    color: white;   
     display: block;
     background-color: gray;
     border-radius: 10px;
@@ -25,17 +24,37 @@ label.has-required::before {
 }
 
 .theme-dark-navlink-active {
-  color: white;
+  color: black;
   display: block;
-  background-color: gray;
+  background-color: white;
   border-radius: 10px;
   padding-right: 5px;
   padding-left: 5px;
 }
 
 // 圖片顯示方形，整體不變形
-.img-radio-1x1 {
+// .img-radio-1x1 {
+//   // aspect-ratio: 1 / 1;
+//   object-fit: cover;
+//   object-position: center;
+// }
+
+.ratio-1x1{
   aspect-ratio: 1 / 1;
-  object-fit: cover;
-  object-position: center;
+}
+
+.bg-img-contain{
+  background-size: contain;
+}
+
+.bg-img-cover{
+  background-size: cover;
+}
+
+.bg-img-center{
+  background-position: center;
+}
+
+.bg-img-norepeat{
+  background-repeat: no-repeat;
 }
