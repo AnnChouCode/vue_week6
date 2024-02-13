@@ -84,6 +84,13 @@ const routes = [
         }
       },
       {
+        path: '/admin/productinfo/new',
+        component: () => import('../views/admin/AdminProductInfo.vue'),
+        meta: {
+          title: '使用者後台 - Dessert Time'
+        }
+      },
+      {
         path: '/admin/productinfo/:id',
         component: () => import('../views/admin/AdminProductInfo.vue'),
         props: (route) => {
@@ -109,15 +116,6 @@ const routes = [
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
   routes,
-  linkActiveClass: (route) => {
-    if (route.meta.navbarType === 'backend') {
-      return 'theme-dark-navlink-active'
-    } else if (route.meta.navbarType === 'frontend') {
-      return 'text-danger'
-    } else {
-      return 'active'
-    }
-  },
   // 對於所有路由導航，簡單地讓頁面滾動到頂部
   scrollBehavior (to, from, savedPosition) {
     return {
@@ -127,8 +125,22 @@ const router = createRouter({
   }
 })
 
-// router 命名
+// router 進入前執行
 router.beforeEach((to, from, next) => {
+  // linkActive 換樣式
+  const linkActive = (() => {
+    if (to.meta.navbarType === 'backend') {
+      return 'theme-dark-navlink-active'
+    } else if (to.meta.navbarType === 'frontend') {
+      return 'fw-bold text-white'
+    } else {
+      return 'active'
+    }
+  })()
+
+  router.options.linkActiveClass = linkActive
+
+  // 頁面變更名稱
   window.document.title = to.meta.title
   next()
 })
