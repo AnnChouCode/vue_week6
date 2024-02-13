@@ -1,13 +1,15 @@
 <template>
   <div class="container overflow-y-scroll scrollbar-y-hide vh-100">
-    <h2 class="py-5 h2">編輯商品</h2>
+    <h2 v-if="isNewProduct" class="py-5 h2 fw-bold">新增商品</h2>
+    <h2 v-else class="py-5 h2 fw-bold">編輯商品</h2>
     <div>
       <div class="mb-5">
         <h5 class="mb-3 h5 fw-bold">商品圖片</h5>
-        <p class="mb-3">※ 建議上傳方形圖片，以免影響前台效果</p>
         <div class="row g-1 mb-3">
+          <!-- 封面圖 -->
           <div class="col-6 col-md-2">
-            <div class="position-relative border border-1 h-100">
+            <div class="ratio-1x1">
+              <div class="position-relative border border-1 h-100">
               <button
                 type="button"
                 class="position-absolute top-0 end-0 d-flex justify-content-center align-items-center mt-2 me-2 btn btn-light"
@@ -16,28 +18,26 @@
               >
                 <i class="bi bi-trash"></i>
               </button>
-              <div
-                class="position-absolute bottom-0 py-1 text-center text-white bg-dark opacity-75 w-100"
-              >
+              <div class="position-absolute bottom-0 py-1 text-center text-white bg-dark opacity-75 w-100">
                 封面圖片
               </div>
-              <img v-if="tempProductInfo.imageUrl"
-                class="d-block mx-auto img-radio-1x1"
-                :src="tempProductInfo.imageUrl"
-                alt="picture"
-              />
-              <div v-else class="d-flex flex-column align-items-center justify-content-center h-100 bg-light">
-                <i class="bi bi-image mb-2"></i>
-                <p>目前無封面</p>
+              <div v-if="tempProductInfo.imageUrl" :style="`background-image:url(${tempProductInfo.imageUrl})`" class="h-100 bg-img-contain bg-img-center bg-img-norepeat"></div>
+              <div v-else class="h-100">
+                <button  @click="openImageModal('isCover')" class="d-flex flex-column align-items-center justify-content-center w-100 h-100 text-secondary btn btn-light rounded-0" type="button">
+                  <i class="bi bi-image mb-2"></i>
+                  <p>目前無封面</p>
+                </button>
               </div>
             </div>
+            </div>
           </div>
+          <!-- 其他圖 -->
           <div
             class="col-6 col-md-2"
             v-for="(img, idx) in tempProductInfo.imagesUrl"
             :key="idx"
           >
-            <div class="position-relative border border-1">
+            <div class="position-relative border border-1 h-100">
               <button
                 type="button"
                 class="position-absolute top-0 end-0 d-flex justify-content-center align-items-center mt-2 me-2 btn btn-light"
@@ -46,52 +46,72 @@
               >
                 <i class="bi bi-trash"></i>
               </button>
-              <img
-                class="d-block mx-auto img-radio-1x1"
-                :src="img"
-                alt="picture"
-              />
+              <div :style="`background-image:url(${img})`" class="h-100 bg-img-contain bg-img-center bg-img-norepeat"></div>
             </div>
           </div>
-          <div class="col-6 col-md-2">
-            <button  @click="openImageModal" class="d-flex align-items-center justify-content-center border border-1 img-radio-1x1 w-100 text-secondary" type="button">
-新增圖片
+          <!-- 新增圖片 -->
+          <div class="col-6 col-md-2 p-0 border border-1">
+            <button  @click="openImageModal('inNotCover')" class="d-flex align-items-center justify-content-center w-100 h-100 text-secondary btn btn-light rounded-0" type="button">
+            新增圖片
             </button>
           </div>
         </div>
+        <!-- 刪除所有圖片 -->
         <button typs="button" class="p-0 btn text-danger" @click="deleteImage">
           <i class="bi bi-trash me-2"></i>
           <span>刪除所有圖片</span>
         </button>
       </div>
-      {{ tempProductInfo }}
+
+      <!-- 商品基本資訊 -->
       <div>
         <h5 class="mb-3 h5 fw-bold">商品基本資訊</h5>
-        <form class="d-flex flex-column gap-3">
+        <v-form v-slot="{ errors }" class="d-flex flex-column gap-3" @submit="updateProductInfo">
           <div d-flex>
-            <label for="name" class="form-label fw-bold">商品名稱</label>
-            <input
+            <label for="title" class="form-label fw-bold has-required">商品名稱</label>
+            <v-field
               type="text"
-              id="name"
               class="form-control"
               placeholder="請輸入商品名稱"
               v-model="tempProductInfo.title"
-            />
+              id="title"
+              name="title"
+              :class="{ 'is-invalid': errors['title'] }"
+              rules="required"></v-field>
+            <error-message name="title" class="invalid-feedback"></error-message>
           </div>
           <div class="row">
             <div class="col-md-6">
-              <label for="category" class="form-label fw-bold">商品分類</label>
-              <input
+              <label for="quantity" class="me-2 form-label fw-bold">商品數量</label><small>若未填寫則不限數量</small>
+              <v-field id="quantity" name="quantity" type="number" class="form-control" :class="{ 'is-invalid': errors['quantity'] }"
+              placeholder="請輸入商品數量"  v-model.number="tempProductInfo.num"></v-field>
+            </div>
+            <div class="col-md-6">
+              <label for="unit" class="form-label fw-bold has-required">商品單位</label>
+              <v-field id="unit" name="unit" type="text" class="form-control" :class="{ 'is-invalid': errors['unit'] }"
+              placeholder="請輸入商品單位" rules="required" v-model="tempProductInfo.unit"></v-field>
+            <error-message name="unit" class="invalid-feedback"></error-message>
+            </div>
+          </div>
+          <div>
+            <div>
+                <label for="category" class="form-label fw-bold has-required">商品分類</label>
+              <v-field
                 type="text"
                 id="category"
+                name="category"
                 class="form-control mb-1"
                 placeholder="請輸入商品分類"
-                v-model="tempProductInfo.category"
-              />
+                :class="{ 'is-invalid': errors['category'] }"
+                rules="required"
+                v-model="tempProductInfo.category"></v-field>
+                <error-message name="category" class="invalid-feedback"></error-message>
+              </div>
               <div class="d-flex align-items-center text-nowrap">
                 <span>點擊帶入分類：</span>
                 <div class="d-flex gap-1 mb-0 flex-wrap">
                   <button
+                    type="button"
                     class="btn btn-light rounded-pill py-1"
                     v-for="(item, idx) in tempCategoryList"
                     value="item"
@@ -102,38 +122,35 @@
                   </button>
                 </div>
               </div>
-            </div>
-            <div class="col-md-6">
-              <label for="unit" class="form-label fw-bold">商品單位</label>
-              <input
-                type="text"
-                id="unit"
-                class="form-control"
-                placeholder="請輸入商品單位"
-                v-model="tempProductInfo.unit"
-              />
-            </div>
           </div>
           <div class="row">
             <div class="col-md-6">
-              <label for="origin_price" class="form-label fw-bold">原價</label>
-              <input
+              <label for="origin_price" class="form-label fw-bold has-required">原價</label>
+              <v-field
                 type="number"
                 id="origin_price"
+                name="origin_price"
                 class="form-control"
+                :class="{ 'is-invalid': errors['origin_price'] }"
                 placeholder="請輸入原價"
+                rules="required"
                 v-model.number="tempProductInfo.origin_price"
-              />
+              ></v-field>
+              <error-message name="origin_price" class="invalid-feedback"></error-message>
             </div>
             <div class="col-md-6">
-              <label for="price" class="form-label fw-bold">售價</label>
-              <input
+              <label for="price" class="form-label fw-bold has-required">售價</label>
+              <v-field
                 type="number"
                 id="price"
+                name="price"
                 class="form-control"
+                :class="{ 'is-invalid': errors['price'] }"
                 placeholder="請輸入商品售價"
+                rules="required"
                 v-model.number="tempProductInfo.price"
-              />
+              ></v-field>
+              <error-message name="price" class="invalid-feedback"></error-message>
             </div>
           </div>
           <div>
@@ -156,22 +173,20 @@
               v-model="tempProductInfo.content"
             ></textarea>
           </div>
-        </form>
+          <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" role="switch" id="is_enabled" checked v-model="tempProductInfo.is_enabled">
+            <label class="form-check-label" for="is_enabled">是否啟用商品</label>
+          </div>
+          <div class="d-flex justify-content-end gap-2 pt-3">
+            <router-link to="/admin/products" class="btn btn-outline-dark">取消</router-link>
+            <button type="submit" class="btn btn-dark text-white">確認</button>
+          </div>
+        </v-form>
       </div>
-    </div>
-    <div class="d-flex justify-content-end gap-2 pt-3">
-      <button
-        type="button"
-        class="btn btn-outline-dark"
-        data-bs-dismiss="modal"
-      >
-        取消
-      </button>
-      <button type="button" class="btn btn-dark text-white">確認</button>
     </div>
   </div>
 
-  <uploadImageModal ref="uploadImageModal"></uploadImageModal>
+  <uploadImageModal ref="uploadImageModal" @submitImgUrl="getImgUrl" :is-Cover="isCover"></uploadImageModal>
 </template>
 
 <script>
@@ -182,14 +197,19 @@ import uploadImageModal from '@/components/uploadImageModal.vue'
 
 const adminLoginStore = useAdminLoginStore()
 const productsStore = useAllAdminProductsStore()
+const { VITE_API, VITE_PATH } = import.meta.env
 
 export default {
   data () {
     return {
+      // 本頁狀態
+      isNewProduct: false,
       // 產品資訊
       tempProductInfo: {},
       // 產品分類列表
-      tempCategoryList: []
+      tempCategoryList: [],
+      // 增加封面或圖片
+      isCover: false
     }
   },
   methods: {
@@ -217,8 +237,47 @@ export default {
     },
 
     // 開啟圖片處理 modal
-    openImageModal () {
+    openImageModal (action) {
+      if (action === 'isCover') {
+        this.isCover = true
+      } else {
+        this.isCover = false
+      }
       this.$refs.uploadImageModal.openModal()
+    },
+
+    // 獲取新上傳圖片網址
+    getImgUrl (target, url) {
+      // 新增封面
+      if (target === 'imageUrl') {
+        this.tempProductInfo.imageUrl = url
+        return
+      }
+      // 新增圖片庫
+      if (this.tempProductInfo.imagesUrl) {
+        this.tempProductInfo.imagesUrl.push(url)
+      } else {
+        this.tempProductInfo.imagesUrl = [url]
+      }
+    },
+
+    // 更新產品資訊
+    updateProductInfo () {
+      let url = `${VITE_API}/api/${VITE_PATH}/admin/product`
+      const method = this.isNewProduct ? 'post' : 'put'
+
+      if (!this.isNewProduct) {
+        url += `/${this.tempProductInfo.id}`
+      }
+
+      this.axios[method](url, { data: this.tempProductInfo })
+        .then(res => {
+          this.$swal.fire(res.data.message)
+          this.$router.push('/admin/products')
+        })
+        .catch(err => {
+          this.$swal.fire(err.response.data.message)
+        })
     },
 
     // 獲取所有資料
@@ -232,10 +291,18 @@ export default {
         const products = await productsStore.getAllProducts()
         console.log('productInfo 拿到 productStore 給的資料了', products)
 
-        // 獲取此頁產品資料
-        const id = this.$route.params.id
-        this.getProductInfo(productsStore.allProducts, id)
+        // 獲取產品分類表
         this.tempCategoryList = [...productsStore.categoryList]
+
+        // 判斷頁面為新增產品或編輯產品
+        const id = this.$route.params.id
+        if (!id) {
+          this.isNewProduct = true
+          return
+        }
+
+        // 獲取此頁產品資料
+        this.getProductInfo(productsStore.allProducts, id)
       } catch (err) {
         console.log(err.response.data.message)
       }
