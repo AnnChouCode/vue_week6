@@ -9,19 +9,34 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav">
+        <ul class="navbar-nav justify-content-between w-100">
           <li class="nav-item py-2">
-            <RouterLink to="/productlist" class="nav-link">看產品</RouterLink>
+            <RouterLink to="/productlist" class="text-secondary">看產品</RouterLink>
           </li>
-          <li class="nav-item py-2">
-            <RouterLink to="/cart" class="nav-link">購物車</RouterLink>
-          </li>
-          <li class="nav-item py-2">
+          <li class="nav-item d-flex flex-column flex-lg-row gap-3 py-2">
+            <RouterLink to="/cart" class="text-secondary">
+              <div class="d-flex gap-1">
+                <p>購物車</p>
+                <div v-if="cartsList.total" class="bg-danger rounded-pill px-2 py-1 text-white" style="font-size:12px;">{{ cartsList.carts.length }}</div>
+              </div>
+            </RouterLink>
             <!-- 未登入 -->
-            <RouterLink v-if="!isLoggedin" to="/userlogin" class="nav-link">去後台</RouterLink>
+            <RouterLink v-if="!isLoggedin" to="/userlogin" class="text-secondary">
+              登入
+            </RouterLink>
             <!-- 已登入 -->
-            <RouterLink v-else to="/admin" class="nav-link">去後台</RouterLink>
+            <RouterLink v-else to="/admin" class="text-secondary">
+              後台
+            </RouterLink>
           </li>
+          <!-- <li class="nav-item py-2">
+            <RouterLink v-if="!isLoggedin" to="/userlogin" class="nav-link">
+              <i class="bi bi-person-circle"></i>
+            </RouterLink>
+            <RouterLink v-else to="/admin" class="nav-link">
+              <i class="bi bi-person-circle"></i>
+            </RouterLink>
+          </li> -->
         </ul>
       </div>
     </div>
@@ -33,12 +48,18 @@
 
 <script>
 import toastComponent from '@/components/toastComponent.vue'
+import cartStore from '@/stores/cartStore.js'
+import { mapActions, mapState } from 'pinia'
 
 export default {
   data () {
     return {
       isLoggedin: 'false'
     }
+  },
+  methods: {
+    // 獲得購物車資料
+    ...mapActions(cartStore, ['getCartsList'])
   },
   mounted () {
     // 取得 cookie
@@ -51,9 +72,12 @@ export default {
     if (!token) {
       this.isLoggedin = !this.isLoggedin
     }
+
+    this.getCartsList()
   },
   components: {
     toastComponent
-  }
+  },
+  computed: { ...mapState(cartStore, ['cartsList']) }
 }
 </script>
