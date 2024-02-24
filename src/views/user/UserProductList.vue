@@ -32,10 +32,10 @@
               </td>
               <td>
                 <div class="btn-group btn-group-sm">
-                  <button type="button" class="btn btn-outline-secondary" @click="showProductInfo(product.id)">
+                  <button type="button" class="btn btn-outline-default" @click="showProductInfo(product.id)">
                     查看更多
                   </button>
-                  <button type="button" class="btn btn-outline-danger" @click="addToCart(product.id, 1)">
+                  <button type="button" class="btn btn-default" @click="addToCart(product.id, 1)">
                     加到購物車
                   </button>
                 </div>
@@ -77,7 +77,6 @@ export default {
 
     // 取得分頁產品列表
     getProductList (page = 1, category) {
-      console.log('productList 的 getProductList')
       let url = `${VITE_API}/api/${VITE_PATH}/products?page=${page}`
       if (category) { url += `&category=${category}` }
 
@@ -99,12 +98,10 @@ export default {
 
     // 切換產品資訊頁
     showProductInfo (id) {
-      console.log('productList 的 showProductInfo')
       this.$router.push(`/productinfo/${id}`)
     }
   },
   mounted () {
-    console.log('productList 的 mounted')
     // 取得分頁產品列表
     this.getProductList()
     // 取得所有產品資料

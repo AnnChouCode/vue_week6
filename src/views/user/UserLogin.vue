@@ -1,6 +1,6 @@
 <template>
     <div class="container py-5">
-        <h2 class="mb-5 h2 text-center">登入使用者後台</h2>
+        <h2 class="mb-5 text-center">登入使用者後台</h2>
 
       <div class="row justify-content-center">
         <div class="col-6">
@@ -54,7 +54,11 @@ export default {
           const { token, expired } = res.data
           document.cookie = `user = ${token}; expires = ${new Date(expired)}`
           // 通知成功 & 轉換頁面
-          this.$swal.fire('登入成功')
+          this.$swal.fire({
+            title: '登入成功',
+            confirmButtonColor: '#333333',
+            confirmButtonText: '確認'
+          })
             .then(() => {
               this.$router.push('/admin')
             })

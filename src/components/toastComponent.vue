@@ -15,7 +15,10 @@
 
 <script>
 import cartStore from '@/stores/cartStore.js'
-import { mapState } from 'pinia'
+import { useAllAdminOrderStore } from '@/stores/allAdminOrderStore.js'
+import { mapState, mapStores } from 'pinia'
+
+// const ordersStore = useAllAdminOrderStore()
 
 export default {
   data () {
@@ -34,16 +37,29 @@ export default {
         deleteCartItem: {
           icon: 'bi-cart-dash',
           msg: '商品已刪除'
+        },
+        updatePaid: {
+          icon: 'bi-info-circle',
+          msg: '付款狀態已更新'
+        },
+        updateShipping: {
+          icon: 'bi-info-circle',
+          msg: '出貨狀態已更新'
         }
       }
     }
   },
+  props: ['adminOrderState', 'adminOrderAction'],
   computed: {
-    ...mapState(cartStore, ['doAction', 'toastState'])
+    ...mapState(cartStore, ['doAction', 'toastState']),
+    ...mapStores(useAllAdminOrderStore)
   },
   watch: {
     toastState () {
       this.addToastMsg(this.doAction)
+    },
+    adminOrderState () {
+      this.addToastMsg(this.adminOrderAction)
     }
   },
   methods: {
@@ -56,6 +72,12 @@ export default {
     clearToast (idx) {
       this.toastMsgList.splice(idx, 1)
     }
+  },
+  mounted () {
+    // // 監聽訂單 ordersStore toastState
+    // this.$watch(() => ordersStore.toastState, (newVal, oldVal) => {
+    //   this.addToastMsg(ordersStore.doAction)
+    // })
   }
 }
 </script>

@@ -10,8 +10,9 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav justify-content-between w-100">
-          <li class="nav-item py-2">
+          <li class="nav-item d-flex flex-column flex-lg-row gap-3 py-2">
             <RouterLink to="/productlist" class="text-secondary">看產品</RouterLink>
+            <RouterLink to="/orders" class="text-secondary">查訂單</RouterLink>
           </li>
           <li class="nav-item d-flex flex-column flex-lg-row gap-3 py-2">
             <RouterLink to="/cart" class="text-secondary">

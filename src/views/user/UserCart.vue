@@ -47,11 +47,11 @@
           <tfoot>
             <tr>
               <td colspan="3" class="text-end">總計</td>
-              <td class="text-end">{{ cartsList.total }}</td>
+              <td class="text-end">{{ cartsList.total.toLocaleString() }}</td>
             </tr>
             <tr v-if="cartsList.total !== cartsList.final_total">
               <td colspan="3" class="text-end text-success">折扣價</td>
-              <td class="text-end text-success">{{ cartsList.final_total }}</td>
+              <td class="text-end text-success">{{ cartsList.final_total.toLocaleString() }}</td>
             </tr>
           </tfoot>
         </table>
@@ -154,7 +154,12 @@ export default {
     submitOrder () {
       // 檢查購物車是否為空
       if (!this.cartsList.carts.length) {
-        this.$swal.fire('購物車內沒有商品')
+        this.$swal.fire({
+          title: '購物車內沒有商品',
+          confirmButtonColor: '#333333',
+          confirmButtonText: '確認'
+        })
+
         return
       }
 
@@ -170,7 +175,12 @@ export default {
       this.axios.post(url, order)
         .then(res => {
           // 提示訊息
-          this.$swal.fire(res.data.message)
+          this.$swal.fire({
+            title: res.data.message,
+            confirmButtonColor: '#333333',
+            confirmButtonText: '確認'
+          })
+
           // 清除表單
           this.$refs.form.resetForm()
           // 重整購物車
@@ -213,7 +223,11 @@ export default {
           this.axios.delete(url)
             .then(res => {
               // 提示訊息
-              this.$swal.fire(res.data.message)
+              this.$swal.fire({
+                title: res.data.message,
+                confirmButtonColor: '#333333',
+                confirmButtonText: '確認'
+              })
               // 重整購物車
               this.getCartsList()
             })

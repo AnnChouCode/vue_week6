@@ -1,43 +1,46 @@
 <template>
-  <div class="container overflow-y-scroll scrollbar-y-hide vh-100">
-    <div class="d-flex justify-content-between py-5">
-      <h2 class="h2 fw-bold">訂單管理</h2>
+  <div class="overflow-y-scroll scrollbar-y-hide vh-100">
+    <div class="d-flex justify-content-between py-4 py-md-5 ">
+      <h2 class="fw-bold">訂單管理</h2>
       <button type="button" class="btn btn-dark" @click="deleteOrder('all')">清除全部訂單</button>
     </div>
     <div>
-      <p v-if="ordersList" class="py-5 text-center">目前沒有訂單</p>
+      <p v-if="!ordersList.length" class="py-5 text-center">目前沒有訂單</p>
       <!-- 訂單列表 -->
-      <table v-else class="table align-middle">
+      <table v-else class="table align-middle table-sm">
         <thead>
             <tr>
               <th>訂單編號</th>
-              <th>訂單時間</th>
-              <th>客戶姓名</th>
-              <th>付款狀態</th>
-              <th>訂單狀態</th>
-              <th>總金額</th>
+              <th class="d-none d-md-table-cell text-center">訂單時間</th>
+              <th class="d-none d-lg-table-cell text-center">客戶姓名</th>
+              <th class="text-nowrap">付款<span class="d-block d-sm-inline">狀態</span></th>
+              <th class="text-nowrap">處理<span class="d-block d-sm-inline">狀態</span></th>
+              <th class="d-none d-lg-table-cell text-center">總金額</th>
               <th></th>
             </tr>
         </thead>
         <tbody>
           <tr v-for="order in ordersList" :key="order.id">
             <td>{{ order.id }}</td>
-            <td>{{ order.create_at }}</td>
-            <td>{{ order.user.name }}</td>
+            <td  class="d-none d-md-table-cell text-center">{{ new Date(order.create_at * 1000).toLocaleString().split(" ")[0] }}</td>
+            <td class="d-none d-lg-table-cell text-center">{{ order.user.name }}</td>
             <td>
-                <span v-if="order.is_paid" class="text-success">已付款</span>
-                <span v-else class="text-danger">未付款</span>
+                <span v-if="order.is_paid" class="text-danger text-nowrap">已付款</span>
+                <span v-else class="text-nowrap">未付款</span>
             </td>
-            <td>未處理</td>
-            <td>{{ order.total }}</td>
+            <td>
+                <span v-if="order.is_shipping" class="text-nowrap">已出貨</span>
+                <span v-else class="text-danger text-nowrap">未出貨</span>
+            </td>
+            <td class="d-none d-lg-table-cell text-end">NT$ {{ order.total.toLocaleString() }}</td>
             <td>
               <div class="btn-group align-items-center">
                 <button
                   type="button"
-                  class="btn">
-                  <i class="bi bi-pencil text-success"></i>
+                  class="btn border-0" @click="showOrder(order.id)">
+                  <i class="bi bi-eye text-default"></i>
                 </button>
-                <button type="button" class="btn" @click="deleteOrder(order.id)">
+                <button type="button" class="btn border-0" @click="deleteOrder(order.id)">
                   <i class="bi bi-trash text-danger"></i>
                 </button>
               </div>
@@ -49,19 +52,13 @@
       <paginationComponent :pagination="pagination" @get-List="getOrderList"></paginationComponent>
     </div>
   </div>
-
-  <!-- <uploadImageModal ref="uploadImageModal" @submitImgUrl="getImgUrl" :is-Cover="isCover"></uploadImageModal> -->
 </template>
 
 <script>
-import { useAdminLoginStore } from '@/stores/adminLoginStore.js'
-// import { useAllAdminOrderStore } from '@/stores/allAdminOrderStore.js'
-import { mapStores } from 'pinia'
-// import uploadImageModal from '@/components/uploadImageModal.vue'
 import paginationComponent from '@/components/paginationComponent.vue'
-
-const adminLoginStore = useAdminLoginStore()
-// const ordersStore = useAllAdminOrderStore()
+import { useAllAdminOrderStore } from '@/stores/allAdminOrderStore.js'
+import { mapStores } from 'pinia'
+const ordersStore = useAllAdminOrderStore()
 const { VITE_API, VITE_PATH } = import.meta.env
 
 export default {
@@ -73,29 +70,20 @@ export default {
   },
   methods: {
     // 獲取所有訂單
-    getOrderList (page = 1) {
-      const url = `${VITE_API}/api/${VITE_PATH}/admin/orders?page=${page}`
+    async getOrderList (page = 1) {
+      await ordersStore.getAllOrders(page)
 
-      this.axios.get(url)
-        .then(res => {
-          const { orders, pagination } = res.data
-          this.ordersList = orders
-          this.pagination = pagination
-          console.log(this.ordersList)
-        })
-        .catch(err => {
-          this.$swal.fire(
-            {
-              icon: 'error',
-              text: err.response.data.message
-            }
-          )
-        })
+      this.ordersList = ordersStore.allOrders
+      this.pagination = ordersStore.pagination
+    },
+
+    // 觀看訂單詳細資料
+    showOrder (id) {
+      this.$router.push(`/admin/orderinfo/${id}`)
     },
 
     // 刪除訂單
     deleteOrder (id) {
-      console.log(id)
       let url = `${VITE_API}/api/${VITE_PATH}/admin/orders/all`
       let alertTitle = '確定要刪除<span class="text-danger">全部</span>訂單嗎？'
 
@@ -108,12 +96,13 @@ export default {
       this.$swal
         .fire({
           title: alertTitle,
-          text: '這個動作無法復原',
+          text: '請再次確認，以免影響顧客權益',
           icon: 'question',
           showCancelButton: true,
-          confirmButtonColor: '#000000',
-          cancelButtonColor: 'gray',
-          confirmButtonText: 'OK'
+          confirmButtonColor: '#787878',
+          cancelButtonColor: '#333333',
+          cancelButtonText: '取消',
+          confirmButtonText: '確認刪除'
         })
         .then((result) => {
           if (result.isConfirmed) {
@@ -123,7 +112,12 @@ export default {
             this.axios.delete(url)
               .then(res => {
                 // 提示訊息
-                this.$swal.fire(res.data.message)
+                this.$swal.fire({
+                  title: res.data.message,
+                  confirmButtonColor: '#333333',
+                  confirmButtonText: '確認'
+                })
+
                 // 重整訂單列表
                 this.getOrderList()
               })
@@ -141,37 +135,18 @@ export default {
               })
           }
         })
-    },
-
-    // 獲取所有資料
-    async fetchData () {
-      try {
-        // 確認登入
-        await adminLoginStore.checkLogin()
-        console.log('Orders 確認登入')
-
-        // 獲取所有訂單資料
-        this.getOrderList()
-        // ordersStore.getAllOrders()
-        // this.orders = ordersStore.allOrders
-        // console.log('orders 拿到 ordersStore 給的資料了', this.orders)
-      } catch (err) {
-        console.log(err.response.data.message)
-      }
     }
   },
   computed: {
-    ...mapStores(useAdminLoginStore)
-    // ...mapStores(useAllAdminOrderStore)
+    ...mapStores(useAllAdminOrderStore)
   },
   components: {
     paginationComponent
-    // uploadImageModal
   },
   mounted () {
     console.log('Orders 的 mounted，即將執行確認登入')
     // 獲取所有資料
-    this.fetchData()
+    this.getOrderList()
   }
 }
 </script>

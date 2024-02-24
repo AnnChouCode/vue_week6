@@ -1,8 +1,13 @@
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-  // outline: 1px solid orange;
+// *,
+// *::before,
+// *::after {
+//   outline: 1px solid orange;
+// }
+
+html,
+body {
+  font-family: 'Noto Sans TC', sans-serif;
+  color: $default;
 }
 
 img {

@@ -4,13 +4,13 @@ const routes = [
   {
     path: '/',
     redirect: 'home',
-    component: () => import('../views/UserFrontView.vue'),
+    component: () => import('../views/user/UserFrontView.vue'),
     meta: { navbarType: 'frontend' },
     children: [
       {
         path: 'home',
         name: 'userhome',
-        component: () => import('../views/HomeView.vue'),
+        component: () => import('../views/user/HomeView.vue'),
         meta: {
           title: 'Dessert Time'
         }
@@ -18,7 +18,7 @@ const routes = [
       {
         path: 'productlist',
         name: 'productlist',
-        component: () => import('../views/UserProductList.vue'),
+        component: () => import('../views/user/UserProductList.vue'),
         meta: {
           title: '產品列表 - Dessert Time'
         }
@@ -26,7 +26,7 @@ const routes = [
       {
         path: 'cart',
         name: 'cart',
-        component: () => import('../views/UserCart.vue'),
+        component: () => import('../views/user/UserCart.vue'),
         meta: {
           title: '購物車 - Dessert Time'
         }
@@ -34,14 +34,14 @@ const routes = [
       {
         path: 'userlogin',
         name: 'userlogin',
-        component: () => import('../views/UserLogin.vue'),
+        component: () => import('../views/user/UserLogin.vue'),
         meta: {
           title: '登入 - Dessert Time'
         }
       },
       {
         path: 'productinfo/:id',
-        component: () => import('../views/UserProductInfo.vue'),
+        component: () => import('../views/user/UserProductInfo.vue'),
         props: (route) => {
           return {
             id: route.params.id
@@ -49,6 +49,18 @@ const routes = [
         },
         meta: {
           title: '產品資訊 - Dessert Time'
+        }
+      },
+      {
+        path: 'orders',
+        component: () => import('../views/user/UserOrders.vue'),
+        props: (route) => {
+          return {
+            id: route.params.id
+          }
+        },
+        meta: {
+          title: '訂單 - Dessert Time'
         }
       }
     ]
@@ -60,7 +72,7 @@ const routes = [
     meta: { navbarType: 'backend' },
     children: [
       {
-        path: '/admin/dashboard',
+        path: 'dashboard',
         name: 'dashboard',
         component: () => import('../views/admin/AdminDashBoard.vue'),
         meta: {
@@ -68,7 +80,7 @@ const routes = [
         }
       },
       {
-        path: '/admin/products',
+        path: 'products',
         name: 'products',
         component: () => import('../views/admin/AdminProductList.vue'),
         meta: {
@@ -76,22 +88,14 @@ const routes = [
         }
       },
       {
-        path: '/admin/orders',
-        name: 'orders',
-        component: () => import('../views/admin/AdminOrders.vue'),
-        meta: {
-          title: '訂單管理 - Dessert Time'
-        }
-      },
-      {
-        path: '/admin/productinfo/new',
+        path: 'productinfo/new',
         component: () => import('../views/admin/AdminProductInfo.vue'),
         meta: {
           title: '使用者後台 - Dessert Time'
         }
       },
       {
-        path: '/admin/productinfo/:id',
+        path: 'productinfo/:id',
         component: () => import('../views/admin/AdminProductInfo.vue'),
         props: (route) => {
           return {
@@ -100,6 +104,61 @@ const routes = [
         },
         meta: {
           title: '使用者後台 - Dessert Time'
+        }
+      },
+      {
+        path: 'orders',
+        name: 'orders',
+        component: () => import('../views/admin/AdminOrders.vue'),
+        meta: {
+          title: '訂單管理 - Dessert Time'
+        }
+      },
+      {
+        path: 'orderinfo/:id',
+        component: () => import('../views/admin/AdminOrderInfo.vue'),
+        props: (route) => {
+          return {
+            id: route.params.id
+          }
+        },
+        meta: {
+          title: '訂單管理 - Dessert Time'
+        }
+      },
+      {
+        path: 'coupons',
+        name: 'coupons',
+        component: () => import('../views/admin/AdminCoupons.vue'),
+        meta: {
+          title: '優惠券管理 - Dessert Time'
+        }
+      },
+      {
+        path: 'articles',
+        name: 'articles',
+        component: () => import('../views/admin/AdminArticles.vue'),
+        meta: {
+          title: '文章管理 - Dessert Time'
+        }
+      },
+      {
+        path: 'articleinfo/new',
+        component: () => import('../views/admin/AdminArticleInfo.vue'),
+        meta: {
+          title: '文章管理 - Dessert Time'
+        }
+      },
+      {
+        path: 'articleinfo/:id',
+        component: () => import('../views/admin/AdminArticleInfo.vue'),
+        props: (route) => {
+          return {
+            id: route.params.id
+          }
+        },
+        meta: {
+          title: '文章管理 - Dessert Time'
         }
       }
     ]

@@ -154,6 +154,7 @@ export default {
       } else {
         this.$emit('submitImgUrl', 'imagesUrl', this.imgUrl)
       }
+      this.imgUrl = ''
       this.closeModal()
     }
   },

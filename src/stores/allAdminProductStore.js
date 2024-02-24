@@ -21,7 +21,7 @@ export const useAllAdminProductsStore = defineStore('adminProducts', {
         .then(res => {
           this.allProducts = res.data.products
           this.getCategoryList()
-          console.log('productStore 拿到產品資料了')
+
           return res // 要傳回的資料
         })
         .catch(err => {

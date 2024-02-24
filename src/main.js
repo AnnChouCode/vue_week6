@@ -10,6 +10,9 @@ import VueAxios from 'vue-axios'
 import { LoadingPlugin } from 'vue-loading-overlay'
 import 'vue-loading-overlay/dist/css/index.css'
 
+// import CKEditor
+import CKEditor from '@ckeditor/ckeditor5-vue'
+
 // import vue-sweetAlert2
 import VueSweetalert2 from 'vue-sweetalert2'
 import 'sweetalert2/dist/sweetalert2.min.css'
@@ -65,4 +68,6 @@ app.use(createPinia())
 app.use(router)
 app.use(VueAxios, axios)
 app.use(register)
+app.use(CKEditor)
+
 app.mount('#app')

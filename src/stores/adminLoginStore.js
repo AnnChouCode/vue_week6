@@ -1,12 +1,18 @@
 import { defineStore } from 'pinia'
 import axios from 'axios'
 import swal from 'sweetalert2'
+import router from '@/router'
+import { useLoading } from 'vue-loading-overlay'
+
+const $loading = useLoading()
 
 export const useAdminLoginStore = defineStore('adminLogin', {
   actions: {
     // 確認登入
     checkLogin () {
-      console.log('loginStore 的 checkLogin 啟動')
+      // 開啟 loading
+      const loader = $loading.show()
+
       const { VITE_API } = import.meta.env
       const url = `${VITE_API}/api/user/check`
 
@@ -17,13 +23,11 @@ export const useAdminLoginStore = defineStore('adminLogin', {
         ?.split('=')[1]
 
       axios.defaults.headers.common.Authorization = token
-      console.log('adminLogin token get')
 
-      // 確認是否登入，返回 promise
-      return axios
+      axios
         .post(url)
         .then(function (res) {
-          return res // 傳回資料
+          console.log('已驗證登入')
         })
         .catch((err) => {
           swal
@@ -32,16 +36,13 @@ export const useAdminLoginStore = defineStore('adminLogin', {
               text: err.response.data.message
             })
             .then((result) => {
-              this.$router.push('/home')
+              router.push('/userlogin')
             })
         })
+        .finally(() => {
+          // 關閉 loading
+          loader.hide()
+        })
     }
-
-    // 登入
-    // logout () {
-    //   document.cookie = 'user=;expires=;'
-    //   console.log(this)
-    //   this.router.push('/home')
-    // }
   }
 })
